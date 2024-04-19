@@ -11,6 +11,10 @@
  */
 //#include "../usermods/EXAMPLE_v2/usermod_v2_example.h"
 
+#ifdef USERMOD_GROWLED
+  #include "../usermods/groWLED/usermod_groWLED.h"
+#endif
+
 #ifdef USERMOD_BATTERY
   #include "../usermods/Battery/usermod_v2_Battery.h"
 #endif
@@ -212,6 +216,9 @@ void registerUsermods()
    * \/ \/ \/
    */
   //usermods.add(new MyExampleUsermod());
+
+  usermods.add(new UsermodGroWLED());
+
   #ifdef USERMOD_BATTERY
   usermods.add(new UsermodBattery());
   #endif
