@@ -7,19 +7,17 @@ extern bool isTodayInDateRange(byte monthStart, byte dayStart, byte monthEnd, by
 class UsermodGroWLED : public Usermod {
 private:
     unsigned long lastTime = 0;
+    bool usermodActive = true;
 
 public:
     void setup() {
-        // Your setup code goes here
     }
 
     void loop() {
-        if (millis() - lastTime > 60000) { // Update every minute
+        if (millis() - lastTime > 60000 && usermodActive) { // Update every minute
             lastTime = millis();
 
             // Get current time
-            uint8_t currentHour = hour(localTime);
-            uint8_t currentMinute = minute(localTime);
             uint8_t latestMacroIndex = -1;
             bool foundMacro = false;
 
@@ -43,4 +41,24 @@ public:
             foundMacro = false;
         }
     }
+
+    void addToConfig(JsonObject& root)
+    {
+      JsonObject top = root.createNestedObject("groWLED usermod");
+      top["active"] = usermodActive;
+    }
+
+        bool readFromConfig(JsonObject& root)
+    {
+      // default settings values could be set here (or below using the 3-argument getJsonValue()) instead of in the class definition or constructor
+      // setting them inside readFromConfig() is slightly more robust, handling the rare but plausible use case of single value being missing after boot (e.g. if the cfg.json was manually edited and a value was removed)
+
+      JsonObject top = root["groWLED usermod"];
+
+      bool configComplete = !top.isNull();
+
+      configComplete &= getJsonValue(top["active"], usermodActive);
+
+      return configComplete;
+    }    
 };
